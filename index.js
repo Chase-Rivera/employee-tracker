@@ -101,6 +101,48 @@ const addDep = async () => {
     })
 };
 
+const addRole = async () => {
+    let strDepRes = [], listDepName = [];
+    await query(`SELECT * FROM department`)
+        .then((res) => {
+            strDepRes = JSON.parse(JSON.stringify(res));
+            for (var i =0; i < strDepRes.length; i++) {
+                listDepName.push(strDepRes[i].name);
+            };
+        })
+        .catch((err) => console.error(err));
 
+    const roleUserRes = await inquirer.prompt([
+        {
+            type: 'input',
+            message: 'What is the name of the role?',
+            name: 'rolename'
+        },
+        {
+            type: 'input',
+            message: 'What is the salary of the role?',
+            name: 'roleSalary'
+        },
+        {
+            type: 'input',
+            message: 'Which department does this role reside under?',
+            name: 'roleDep',
+            choices: listDepName
+        }
+    ]);
+
+    const sql = `INSERT INTO role (title, salary, dept_id) VALUES (?, ?, ?)`;
+    const idRoleDep = strDepRes[strDepRes.findIndex(ary => ary.name === roleUserRes.roleDep)].id;
+    const params = [roleUserRes.roleName, roleUserRes.roleSalary, idRoleDep];
+
+    query(sql, params)
+        .then((res) => {
+            console.log(`Added ${roleUserRes.roleName} to the database.`)
+            return nextAction();
+        })
+        .catch((err) => {
+            console.error(err);
+        })
+};
 
 nextAction();
