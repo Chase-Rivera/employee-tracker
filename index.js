@@ -206,4 +206,55 @@ const addEmp = async () => {
         })
 };
 
+const updateEmpRole = async () => {
+    let strEmpRes = [], listEmpName = [], strRoleRes = [], listRoleTit = [];
+    await query(`SELECT e.id, CONCAT(e.first_name, " " , e.last_name) AS name FROM employee e`)
+        .then((res) => {
+            strEmpRes = JSON.parse(JSON.stringify(res));
+            for (var i = 0; i < strEmpRes.length; i++) {
+                listEmpName.push(strEmpRes[i].name);
+            };
+        })
+        .catch((err) => console.error(err));
+
+    await query(`SELECT r.id, r.title FROM role r`)
+        .then((res) => {
+            strRoleRes = JSON.parse(JSON.stringify(res));
+            for (var i = 0; i < strRoleRes.length; i++) {
+                listRoleTit.push(strRoleRes[i].title);
+            };
+        })
+        .catch((err) => console.error(err));
+
+    const updateEmpRoleRes = await inquirer.prompt([
+        {
+            type: "list",
+            message: "Which employee's role would you like to update?",
+            name: "empName",
+            choices: listEmpName
+        },
+        {
+            type: "list",
+            message: "Which role would you like to assign to this employee?",
+            name: "empUpdatedRole",
+            choices: listRoleTit
+        }
+    ]);
+
+    const sql = `UPDATE employee SET role_id = ? WHERE id = ?`;
+    const idEmpName = strEmpRes[strEmpRes.findIndex(ary => ary.name === updateEmpRoleRes.empName)].id;
+    const idRoleTit = strRoleRes[strRoleRes.findIndex(ary => ary.title === updateEmpRoleRes.empUpdatedRole)].id;
+    const params = [idRoleTit, idEmpName];
+
+    query(sql, params)
+        .then((res) => {
+            console.log(`Updated ${updateEmpRoleRes.empName}'s role in the database.`)
+            return whatToDo();
+        })
+        .catch((err) => {
+            console.error(err);
+        })
+
+}
+
 nextAction();
