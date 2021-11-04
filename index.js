@@ -68,4 +68,15 @@ const viewAllRoles = () => {
     })
 };
 
+const viewAllDep = () => {
+    query(`SELECT * FROM department`)
+    .then((res) => {
+        console.table(res);
+        return nextAction();
+    })
+    .catch((err) => {
+        console.error(err);
+    })
+};
+
 nextAction();
