@@ -79,4 +79,28 @@ const viewAllDep = () => {
     })
 };
 
+const addDep = async () => {
+    const depUserRes = await inquirer.prompt([
+        {
+            type: 'input',
+            meaasage: 'What is the name of the department?',
+            name: 'depName'
+        }
+    ]);
+
+    const sql = `INSERT INTO department (name) VALUES (?)`;
+    const params = depUserRes.depName;
+
+    query(sql,params)
+    .then((res) => {
+        console.log(`Added ${params} to the database.`)
+        return nextAction();
+    })
+    .catch((err) => {
+        console.error(err);
+    })
+};
+
+
+
 nextAction();
