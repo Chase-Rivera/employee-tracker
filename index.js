@@ -18,26 +18,26 @@ const query = util.promisify(db.query).bind(db);
 const nextAction = async () => {
     const res = await inquirer.prompt([
         {
-            type: 'list',
-            message: 'What is your next action?',
-            name: 'nextAction',
+            type: "list",
+            message: "What is your next action?",
+            name: "nextAction",
             choices: ["View all departments", "View all roles", "View all employees", "Add a department", "Add a role", "Add an employee", "Update employee role", "Quit"]
         }
     ]);
     switch (res.nextAction) {
-        case 'View all departments':
+        case "View all departments":
             return viewAllDep();
-        case 'View all roles':
+        case "View all roles":
             return viewAllRoles();
-        case 'View all employees':
+        case "View all employees":
             return viewAllEmp();
-        case 'Add a department':
+        case "Add a department":
             return addDep();
-        case 'Add a role':
+        case "Add a role":
             return addRole();
-        case 'Add an employee':
+        case "Add an employee":
             return addEmp();
-        case 'Update an employee role':
+        case "Update an employee role":
             return updateEmpRole();
         default:
             console.log(`\nSeeUnxtTime!\n`);
@@ -82,9 +82,9 @@ const viewAllDep = () => {
 const addDep = async () => {
     const depUserRes = await inquirer.prompt([
         {
-            type: 'input',
-            meaasage: 'What is the name of the department?',
-            name: 'depName'
+            type: "input",
+            meaasage: "What is the name of the department?",
+            name: "depName"
         }
     ]);
 
@@ -114,19 +114,19 @@ const addRole = async () => {
 
     const roleUserRes = await inquirer.prompt([
         {
-            type: 'input',
-            message: 'What is the name of the role?',
-            name: 'rolename'
+            type: "input",
+            message: "What is the name of the role?",
+            name: "rolename"
         },
         {
-            type: 'input',
-            message: 'What is the salary of the role?',
-            name: 'roleSalary'
+            type: "input",
+            message: "What is the salary of the role?",
+            name: "roleSalary"
         },
         {
-            type: 'input',
-            message: 'Which department does this role reside under?',
-            name: 'roleDep',
+            type: "input",
+            message: "Which department does this role reside under?",
+            name: "roleDep",
             choices: listDepName
         }
     ]);
@@ -138,6 +138,67 @@ const addRole = async () => {
     query(sql, params)
         .then((res) => {
             console.log(`Added ${roleUserRes.roleName} to the database.`)
+            return nextAction();
+        })
+        .catch((err) => {
+            console.error(err);
+        })
+};
+
+const addEmp = async () => {
+    let strRoleRes = [], listRoleTit = [], strMngRes = [], listMngName = [];
+    await query(`SELECT r.id, r.title FROM role r`)
+        .then((res) => {
+            strRoleRes = JSON.parse(JSON.stringify(res));
+            for (var i = 0; i < strRoleRes.length; i++) {
+                listRoleTit.push(strRoleRes[i].title);
+            };
+        })
+        .catch((err) => console.error(err));
+
+    await query(`SELECT e.id, CONCAT(e.first_name, " " , e.last_name) AS name FROM employee e`)
+        .then((res) => {
+            strMngRes = JSON.parse(JSON.stringify(res));
+            strMngRes.push({ id: null, name: 'None'});
+            for (var i = 0; i < strMngRes.length; i++) {
+                listMngName.push(strMngRes[i].name);
+            };
+        })
+        .catch((err) => console.error(err));
+    
+    const empUserRes = await inquirer.prompt([
+        {
+            type: "input",
+            message: "What is the employee's first name?",
+            name: "empFirstName"
+        },
+        {
+            type: "input",
+            message: "What is the employee's last name?",
+            name: "empLastName"
+        },
+        {
+            type: "list",
+            message: "What is the employee's role?",
+            name: "empRole",
+            choices: listRoleTit
+        },
+        {
+            type: "list",
+            message: "Who is the employee's manager?",
+            name: "empMng",
+            choices: listMngName
+        }
+    ]);
+
+    const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`;
+    const idEmpRole = strRoleRes[strRoleRes.findIndex(ary => ary.title === empUserRes)].id;
+    const idEmpMng = strMngRes[strMngRes.findIndex(ary => ary.name === empUserRes.empMng)].id;
+    const params = [empUserRes.empFirstname, empUserRes.empLastName, idEmpRole, idEmpMng];
+
+    query(sql, params)
+        .then((res) => {
+            console.log(`Added ${empUserRes.empFirstName + " " + empUserRes.empLastName} to the database.`)
             return nextAction();
         })
         .catch((err) => {
