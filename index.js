@@ -57,4 +57,15 @@ const viewAllEmp = () => {
     })
 };
 
+const viewAllRoles = () => {
+    query(`SELECT r.id, r.title, d.name AS department, r.salary FROM role r JOIN department d ON r.dept_id = d.id`)
+    .then((res) => {
+        console.table(res);
+        return nextAction();
+    })
+    .catch((err) => {
+        console.error(err);
+    })
+};
+
 nextAction();
