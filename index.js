@@ -37,7 +37,7 @@ const nextAction = async () => {
             return addRole();
         case "Add an employee":
             return addEmp();
-        case "Update an employee role":
+        case "Update employee role":
             return updateEmpRole();
         default:
             console.log(`\nSeeUnxtTime!\n`);
@@ -192,9 +192,9 @@ const addEmp = async () => {
     ]);
 
     const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`;
-    const idEmpRole = strRoleRes[strRoleRes.findIndex(ary => ary.title === empUserRes)].id;
+    const idEmpRole = strRoleRes[strRoleRes.findIndex(ary => ary.title === empUserRes.empRole)].id;
     const idEmpMng = strMngRes[strMngRes.findIndex(ary => ary.name === empUserRes.empMng)].id;
-    const params = [empUserRes.empFirstname, empUserRes.empLastName, idEmpRole, idEmpMng];
+    const params = [empUserRes.empFirstName, empUserRes.empLastName, idEmpRole, idEmpMng];
 
     query(sql, params)
         .then((res) => {
@@ -249,7 +249,7 @@ const updateEmpRole = async () => {
     query(sql, params)
         .then((res) => {
             console.log(`Updated ${updateEmpRoleRes.empName}'s role in the database.`)
-            return whatToDo();
+            return nextAction();
         })
         .catch((err) => {
             console.error(err);
