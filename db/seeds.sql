@@ -5,7 +5,7 @@ VALUES ("Management"),
 ("Education"),
 ("Floor Staff");
 
-INSERT INTO role (title, salary, dept_id)
+INSERT INTO role (title, salary, dep_id)
 VALUES ("CEO", 200000, 1),
 ("Floor Manager", 80000, 1),
 ("Head Developement", 100000, 2),
