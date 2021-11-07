@@ -58,7 +58,7 @@ const viewAllEmp = () => {
 };
 
 const viewAllRoles = () => {
-    query(`SELECT r.id, r.title, d.name AS department, r.salary FROM role r JOIN department d ON r.dept_id = d.id`)
+    query(`SELECT r.id, r.title, d.name AS department, r.salary FROM role r JOIN department d ON r.dep_id = d.id`)
     .then((res) => {
         console.table(res);
         return nextAction();
@@ -131,7 +131,7 @@ const addRole = async () => {
         }
     ]);
 
-    const sql = `INSERT INTO role (title, salary, dept_id) VALUES (?, ?, ?)`;
+    const sql = `INSERT INTO role (title, salary, dep_id) VALUES (?, ?, ?)`;
     const idRoleDep = strDepRes[strDepRes.findIndex(ary => ary.name === roleUserRes.roleDep)].id;
     const params = [roleUserRes.roleName, roleUserRes.roleSalary, idRoleDep];
 
