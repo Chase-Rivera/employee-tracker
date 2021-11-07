@@ -146,12 +146,12 @@ const addRole = async () => {
 };
 
 const addEmp = async () => {
-    let strRoleRes = [], listRoleTit = [], strMngRes = [], listMngName = [];
+    let strRoleRes = [], listRoleTitle = [], strMngRes = [], listMngName = [];
     await query(`SELECT r.id, r.title FROM role r`)
         .then((res) => {
             strRoleRes = JSON.parse(JSON.stringify(res));
             for (var i = 0; i < strRoleRes.length; i++) {
-                listRoleTit.push(strRoleRes[i].title);
+                listRoleTitle.push(strRoleRes[i].title);
             };
         })
         .catch((err) => console.error(err));
@@ -181,7 +181,7 @@ const addEmp = async () => {
             type: "list",
             message: "What is the employee's role?",
             name: "empRole",
-            choices: listRoleTit
+            choices: listRoleTitle
         },
         {
             type: "list",
@@ -207,7 +207,7 @@ const addEmp = async () => {
 };
 
 const updateEmpRole = async () => {
-    let strEmpRes = [], listEmpName = [], strRoleRes = [], listRoleTit = [];
+    let strEmpRes = [], listEmpName = [], strRoleRes = [], listRoleTitle = [];
     await query(`SELECT e.id, CONCAT(e.first_name, " " , e.last_name) AS name FROM employee e`)
         .then((res) => {
             strEmpRes = JSON.parse(JSON.stringify(res));
@@ -221,7 +221,7 @@ const updateEmpRole = async () => {
         .then((res) => {
             strRoleRes = JSON.parse(JSON.stringify(res));
             for (var i = 0; i < strRoleRes.length; i++) {
-                listRoleTit.push(strRoleRes[i].title);
+                listRoleTitle.push(strRoleRes[i].title);
             };
         })
         .catch((err) => console.error(err));
@@ -237,14 +237,14 @@ const updateEmpRole = async () => {
             type: "list",
             message: "Which role would you like to assign to this employee?",
             name: "empUpdatedRole",
-            choices: listRoleTit
+            choices: listRoleTitle
         }
     ]);
 
     const sql = `UPDATE employee SET role_id = ? WHERE id = ?`;
     const idEmpName = strEmpRes[strEmpRes.findIndex(ary => ary.name === updateEmpRoleRes.empName)].id;
-    const idRoleTit = strRoleRes[strRoleRes.findIndex(ary => ary.title === updateEmpRoleRes.empUpdatedRole)].id;
-    const params = [idRoleTit, idEmpName];
+    const idRoleTitle = strRoleRes[strRoleRes.findIndex(ary => ary.title === updateEmpRoleRes.empUpdatedRole)].id;
+    const params = [idRoleTitle, idEmpName];
 
     query(sql, params)
         .then((res) => {
