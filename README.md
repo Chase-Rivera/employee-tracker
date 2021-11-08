@@ -17,7 +17,7 @@ MUST HAVE MYSQL INSTALLED. Log into MySQL and execute schema.sql under /db folde
 This application will help companies and HR departments track their employees internally.
 
 ## Demo
-[Employee Tracker Walkthorugh Video]()
+[Employee Tracker Walkthorugh Video](https://watch.screencastify.com/v/luhTuNrUTFwHvXk9twM5)
 
 ## Contribute
 If you would like to contribute, please feel free to contact me using the email below in Questions section.
